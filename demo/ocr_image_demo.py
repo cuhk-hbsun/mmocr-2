@@ -125,18 +125,12 @@ def main():
         args.det_config, args.det_ckpt, device=args.device)
     if hasattr(detect_model, 'module'):
         detect_model = detect_model.module
-    if detect_model.cfg.data.test['type'] == 'ConcatDataset':
-        detect_model.cfg.data.test.pipeline = \
-            detect_model.cfg.data.test['datasets'][0].pipeline
 
     # build recog model
     recog_model = init_detector(
         args.recog_config, args.recog_ckpt, device=args.device)
     if hasattr(recog_model, 'module'):
         recog_model = recog_model.module
-    if recog_model.cfg.data.test['type'] == 'ConcatDataset':
-        recog_model.cfg.data.test.pipeline = \
-            recog_model.cfg.data.test['datasets'][0].pipeline
 
     det_recog_result = det_and_recog_inference(args, detect_model, recog_model)
     print(f'result: {det_recog_result}')

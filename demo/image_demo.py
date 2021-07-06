@@ -24,9 +24,6 @@ def main():
 
     # build the model from a config file and a checkpoint file
     model = init_detector(args.config, args.checkpoint, device=args.device)
-    if model.cfg.data.test['type'] == 'ConcatDataset':
-        model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
-            0].pipeline
 
     # test a single image
     result = model_inference(model, args.img)

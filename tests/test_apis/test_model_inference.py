@@ -13,10 +13,6 @@ def build_model(config_file):
     device = 'cpu'
     model = init_detector(config_file, checkpoint=None, device=device)
 
-    if model.cfg.data.test['type'] == 'ConcatDataset':
-        model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
-            0].pipeline
-
     return model
 
 

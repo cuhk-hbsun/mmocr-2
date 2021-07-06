@@ -288,9 +288,6 @@ if __name__ == '__main__':
     }
 
     cfg = mmcv.Config.fromfile(args.model_config)
-    if cfg.data.test['type'] == 'ConcatDataset':
-        cfg.data.test.pipeline = \
-            cfg.data.test['datasets'][0].pipeline
     onnx2tensorrt(
         args.onnx_file,
         args.model_type,

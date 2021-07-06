@@ -90,8 +90,15 @@ test = dict(
 data = dict(
     samples_per_gpu=2,
     workers_per_gpu=2,
-    train=dict(type='ConcatDataset', datasets=[train1, train2]),
-    val=dict(type='ConcatDataset', datasets=[test]),
-    test=dict(type='ConcatDataset', datasets=[test]))
+    val_dataloader=dict(samples_per_gpu=1),
+    test_dataloader=dict(samples_per_gpu=1),
+    train=dict(
+        type='UniformConcatDataset',
+        datasets=[train1, train2],
+        pipeline=train_pipeline),
+    val=dict(
+        type='UniformConcatDataset', datasets=[test], pipeline=test_pipeline),
+    test=dict(
+        type='UniformConcatDataset', datasets=[test], pipeline=test_pipeline))
 
 evaluation = dict(interval=1, metric='hmean-iou')
