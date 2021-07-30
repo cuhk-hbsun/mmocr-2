@@ -538,7 +538,7 @@ def draw_texts_by_pil(img, texts, boxes=None):
         color = tuple(list(color_list[idx % len(color_list)])[::-1])
         out_draw.line(box, fill=color, width=1)
         box_width = max(max_x - min_x, max_y - min_y)
-        font_size = int(0.9 * box_width / len(text))
+        font_size = int(0.9 * box_width / max(1, len(text)))
         dirname, _ = os.path.split(os.path.abspath(__file__))
         font_path = os.path.join(dirname, 'font.TTF')
         if not os.path.exists(font_path):
@@ -582,10 +582,16 @@ def det_recog_show_result(img, end2end_res, out_file=None):
     """
     img = mmcv.imread(img)
     boxes, texts = [], []
+    char_boxes = []
     for res in end2end_res['result']:
         boxes.append(res['box'])
+        if 'char_boxes' in res:
+            char_boxes.extend(res['char_boxes'])
         texts.append(res['text'])
-    box_vis_img = draw_polygons(img, boxes)
+    if len(char_boxes) > 0:
+        box_vis_img = draw_polygons(img, char_boxes)
+    else:
+        box_vis_img = draw_polygons(img, boxes)
 
     if is_contain_chinese(''.join(texts)):
         text_vis_img = draw_texts_by_pil(img, texts, boxes)

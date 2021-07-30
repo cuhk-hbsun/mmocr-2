@@ -136,14 +136,21 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         if torch.onnx.is_in_onnx_export():
             return out_dec
 
-        label_indexes, label_scores = self.label_convertor.tensor2idx(
-            out_dec, img_metas)
+        label_indexes, label_scores, select_inds, seq_lens = \
+            self.label_convertor.tensor2idx(out_dec, img_metas)
         label_strings = self.label_convertor.idx2str(label_indexes)
 
         # flatten batch results
         results = []
-        for string, score in zip(label_strings, label_scores):
-            results.append(dict(text=string, score=score))
+        for string, score, select_ind, seq_len in zip(label_strings,
+                                                      label_scores,
+                                                      select_inds, seq_lens):
+            results.append(
+                dict(
+                    text=string,
+                    score=score,
+                    select_ind=select_ind,
+                    seq_len=seq_len))
 
         return results
 

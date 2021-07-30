@@ -115,6 +115,7 @@ class CTCConvertor(BaseConvertor):
         scores_topk, indexes_topk = [], []
         scores, indexes = [], []
         feat_len = output.size(1)
+        select_inds, seq_lens = [], []
         for b in range(batch_size):
             valid_ratio = valid_ratios[b]
             decode_len = min(feat_len, math.ceil(feat_len * valid_ratio))
@@ -126,6 +127,8 @@ class CTCConvertor(BaseConvertor):
                 if tmp_value not in (prev_idx, self.blank_idx):
                     select_idx.append(t)
                 prev_idx = tmp_value
+            seq_lens.append(decode_len)
+            select_inds.append(select_idx)
             select_idx = torch.LongTensor(select_idx)
             topk_value = torch.index_select(batch_topk_value[b, :, :], 0,
                                             select_idx)  # valid_seqlen * topk
@@ -141,4 +144,4 @@ class CTCConvertor(BaseConvertor):
         if return_topk:
             return indexes_topk, scores_topk
 
-        return indexes, scores
+        return indexes, scores, select_inds, seq_lens
