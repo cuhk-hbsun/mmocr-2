@@ -98,7 +98,7 @@ def pan_decode(preds,
 def pse_decode(preds,
                text_repr_type='poly',
                min_kernel_confidence=0.5,
-               min_text_avg_confidence=0.85,
+               min_text_avg_confidence=0.5,
                min_kernel_area=0,
                min_text_area=16):
     """Decoding predictions of PSENet to instances. This is partially adapted

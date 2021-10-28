@@ -56,6 +56,21 @@ def ignore_pred(pred_boxes, gt_ignored_index, gt_polys, precision_thr=0.8):
     return pred_polys, pred_points, pred_ignored_index
 
 
+def cal_recall_or_prec_ratio(intersected_area, poly, reset=True):
+    tmp_val = 1.0 * intersected_area / max(1, poly.area)
+    if reset:
+        min_x, min_y, max_x, max_y = poly.bounds
+        w = max_x - min_x
+        h = max_y - min_y
+        h2w_ratio = 1.0 * max(w, h) / max(1, min(w, h))
+        thresh = 1.0 / (int(h2w_ratio) + 1)
+        # not a valid char(s) box
+        if tmp_val < thresh:
+            tmp_val = 0.0
+
+    return tmp_val
+
+
 def eval_hmean_match(pred_boxes,
                      gt_boxes,
                      gt_ignored_boxes,
@@ -114,15 +129,17 @@ def eval_hmean_match(pred_boxes,
             sz = [gt_num, pred_num]
             recall_mat = np.zeros(sz)
             precision_mat = np.zeros(sz)
-            # for recall
+            # for recall and precision
             for gt_id in range(gt_num):
                 for pred_id in range(pred_num):
                     gt_poly = gt_polys[gt_id]
                     det_poly = pred_polys[pred_id]
                     poly_inter = eval_utils.poly_intersection(
                         det_poly, gt_poly)
-                    tmp_recall = 1.0 * poly_inter / max(1, gt_poly.area)
-                    tmp_prec = 1.0 * poly_inter / max(1, det_poly.area)
+                    tmp_recall = cal_recall_or_prec_ratio(
+                        poly_inter, gt_poly, reset=True)
+                    tmp_prec = cal_recall_or_prec_ratio(
+                        poly_inter, det_poly, reset=True)
                     recall_mat[gt_id, pred_id] = tmp_recall
                     precision_mat[gt_id, pred_id] = tmp_prec
 
