@@ -141,9 +141,9 @@ def eval_hmean(results,
                 output_ranklist(img_result, img_infos, rank_list)
 
             print_log(
-                'thr {0:.1f}, recall：{1[recall]:.3f}, '
+                'thr {0:.1f}, recall: {1[recall]:.3f}, '
                 'precision: {1[precision]:.3f}, '
-                'hmean:{1[hmean]:.3f}'.format(thr, result),
+                'hmean: {1[hmean]:.3f}'.format(thr, result),
                 logger=logger)
             if result['hmean'] > best_result['hmean']:
                 best_result = result
