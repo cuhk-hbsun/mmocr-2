@@ -41,7 +41,13 @@ class LoadTextAnnotations(LoadAnnotations):
 
     def _load_masks(self, results):
         ann_info = results['ann_info']
-        h, w = results['img_info']['height'], results['img_info']['width']
+        # h, w = results['img_info']['height'], results['img_info']['width']
+        if results.get('ori_shape', None) is not None:
+            h, w = results['ori_shape'][:2]
+            results['img_info']['height'] = h
+            results['img_info']['width'] = w
+        else:
+            h, w = results['img_info']['height'], results['img_info']['width']
         gt_masks = ann_info['masks']
         if self.poly2mask:
             gt_masks = BitmapMasks(

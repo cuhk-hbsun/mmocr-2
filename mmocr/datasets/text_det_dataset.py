@@ -98,7 +98,7 @@ class TextDetDataset(BaseDataset):
             dict[str: float]
         """
         metrics = metric if isinstance(metric, list) else [metric]
-        allowed_metrics = ['hmean-iou', 'hmean-ic13']
+        allowed_metrics = ['hmean-iou', 'hmean-ic13', 'hmean-match']
         metrics = set(metrics) & set(allowed_metrics)
 
         img_infos = []

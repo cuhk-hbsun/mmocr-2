@@ -5,7 +5,7 @@ import mmcv
 from mmcv.utils import print_log
 
 import mmocr.utils as utils
-from mmocr.core.evaluation import hmean_ic13, hmean_iou
+from mmocr.core.evaluation import hmean_ic13, hmean_iou, hmean_match
 from mmocr.core.evaluation.utils import (filter_2dlist_result,
                                          select_top_boundary)
 from mmocr.core.mask import extract_boundary
@@ -93,7 +93,7 @@ def eval_hmean(results,
             containing the following keys: masks, masks_ignore
         score_thr (float): Score threshold of prediction map.
         metrics (set{str}): Hmean metric set, should be one or all of
-            {'hmean-iou', 'hmean-ic13'}
+            {'hmean-iou', 'hmean-ic13', 'hmean-match'}
     Returns:
         dict[str: float]
     """
@@ -131,6 +131,9 @@ def eval_hmean(results,
                     top_preds, gts, gts_ignore)
             elif metric == 'hmean-ic13':
                 result, img_result = hmean_ic13.eval_hmean_ic13(
+                    top_preds, gts, gts_ignore)
+            elif metric == 'hmean-match':
+                result, img_result = hmean_match.eval_hmean_match(
                     top_preds, gts, gts_ignore)
             else:
                 raise NotImplementedError
