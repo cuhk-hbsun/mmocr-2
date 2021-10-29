@@ -57,7 +57,7 @@ def ignore_pred(pred_boxes, gt_ignored_index, gt_polys, precision_thr=0.8):
 
 
 def cal_recall_or_prec_ratio(intersected_area, poly, reset=True):
-    tmp_val = 1.0 * intersected_area / max(1, poly.area)
+    tmp_val = 0. if poly.area == 0 else 1.0 * intersected_area / poly.area
     if reset:
         min_x, min_y, max_x, max_y = poly.bounds
         w = max_x - min_x
