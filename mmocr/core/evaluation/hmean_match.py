@@ -63,7 +63,7 @@ def cal_recall_or_prec_ratio(intersected_area, poly, reset=True):
         w = max_x - min_x
         h = max_y - min_y
         h2w_ratio = 1.0 * max(w, h) / max(1, min(w, h))
-        thresh = 1.0 / (int(h2w_ratio) + 1)
+        thresh = 1.0 / (round(h2w_ratio) + 1)
         # not a valid char(s) box
         if tmp_val < thresh:
             tmp_val = 0.0
