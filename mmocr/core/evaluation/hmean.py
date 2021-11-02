@@ -122,32 +122,30 @@ def eval_hmean(results,
         if logger is None:
             msg = '\n' + msg
         print_log(msg, logger=logger)
-        best_result = dict(hmean=-1)
-        for iter in range(3, 10):
-            thr = iter * 0.1
-            top_preds = select_top_boundary(preds, pred_scores, thr)
-            if metric == 'hmean-iou':
-                result, img_result = hmean_iou.eval_hmean_iou(
-                    top_preds, gts, gts_ignore)
-            elif metric == 'hmean-ic13':
-                result, img_result = hmean_ic13.eval_hmean_ic13(
-                    top_preds, gts, gts_ignore)
-            elif metric == 'hmean-match':
-                result, img_result = hmean_match.eval_hmean_match(
-                    top_preds, gts, gts_ignore)
-            else:
-                raise NotImplementedError
-            if rank_list is not None:
-                output_ranklist(img_result, img_infos, rank_list)
 
-            print_log(
-                'thr {0:.1f}, recall: {1[recall]:.3f}, '
-                'precision: {1[precision]:.3f}, '
-                'hmean: {1[hmean]:.3f}'.format(thr, result),
-                logger=logger)
-            if result['hmean'] > best_result['hmean']:
-                best_result = result
-        eval_results[metric + ':recall'] = best_result['recall']
-        eval_results[metric + ':precision'] = best_result['precision']
-        eval_results[metric + ':hmean'] = best_result['hmean']
-    return eval_results
+        top_preds = select_top_boundary(preds, pred_scores, score_thr)
+        if metric == 'hmean-iou':
+            result, img_result = hmean_iou.eval_hmean_iou(
+                top_preds, gts, gts_ignore)
+        elif metric == 'hmean-ic13':
+            result, img_result = hmean_ic13.eval_hmean_ic13(
+                top_preds, gts, gts_ignore)
+        elif metric == 'hmean-match':
+            result, img_result = hmean_match.eval_hmean_match(
+                top_preds, gts, gts_ignore)
+        else:
+            raise NotImplementedError
+        if rank_list is not None:
+            output_ranklist(img_result, img_infos, rank_list)
+
+        print_log(
+            'thr {0:.1f}, recall: {1[recall]:.3f}, '
+            'precision: {1[precision]:.3f}, '
+            'hmean: {1[hmean]:.3f}'.format(score_thr, result),
+            logger=logger)
+
+        eval_results[metric + ':recall'] = result['recall']
+        eval_results[metric + ':precision'] = result['precision']
+        eval_results[metric + ':hmean'] = result['hmean']
+
+    return eval_results, img_result

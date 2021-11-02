@@ -83,6 +83,7 @@ class TextDetDataset(BaseDataset):
                  score_thr=0.3,
                  rank_list=None,
                  logger=None,
+                 return_img_res=False,
                  **kwargs):
         """Evaluate the dataset.
 
@@ -110,7 +111,7 @@ class TextDetDataset(BaseDataset):
             img_infos.append(img_info)
             ann_infos.append(ann_info)
 
-        eval_results = eval_hmean(
+        eval_results, img_results = eval_hmean(
             results,
             img_infos,
             ann_infos,
@@ -118,5 +119,8 @@ class TextDetDataset(BaseDataset):
             score_thr=score_thr,
             logger=logger,
             rank_list=rank_list)
+
+        if return_img_res:
+            return eval_results, img_results, img_infos
 
         return eval_results
